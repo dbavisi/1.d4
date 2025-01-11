@@ -31,12 +31,12 @@ jobs:
         run: python src/main.py
 
       # Check for changes
-      - name: Check for changes
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "Changes detected. Proceeding to commit."
-          else
-            echo "No changes detected. Skipping commit." && exit 0
+      # - name: Check for changes
+      #   run: |
+      #     if [ -n "$(git status --porcelain)" ]; then
+      #       echo "Changes detected. Proceeding to commit."
+      #     else
+      #       echo "No changes detected. Skipping commit." && exit 0
 
       # Commit and push changes
       - name: Commit and push changes
