@@ -3,11 +3,13 @@ Utility for packing and unpacking states and handlers
 """
 from os import path, mkdir, replace
 try:
-    from .core.state import Modes, Flags, State
+    from .core.constants import Modes, Flags
+    from .core.state import State
     from .core.handler import Handler
 except Exception as exp:
     print(str(exp))
-    from core.state import Modes, Flags, State
+    from core.constants import Modes, Flags
+    from core.state import State
     from core.handler import Handler
 
 store_dir = '.store'
