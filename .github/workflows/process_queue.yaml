@@ -1,0 +1,50 @@
+name: Run Python Script Every 48 Minutes
+
+on:
+  schedule:
+    - cron: "*/48 * * * *" # Every 48 minutes
+  workflow_dispatch: # Allow manual triggering as well
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9 # Specify your desired Python version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      # Run the script
+      - name: Run Python script
+        run: python src/main.py
+
+      # Check for changes
+      - name: Check for changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected. Proceeding to commit."
+          else
+            echo "No changes detected. Skipping commit." && exit 0
+
+      # Commit and push changes
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "dbavisi"
+          git config --global user.email "dwij@dbavisi.net"
+          git add .
+          git commit -m "Process queue as of [$(date)]"
+          git push origin main
