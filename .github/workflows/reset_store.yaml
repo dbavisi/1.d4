@@ -1,0 +1,38 @@
+name: Cleanup .store Folder
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Remove the .store folder
+      - name: Cleanup .store Folder
+        run: |
+          if [ -d ".store" ]; then
+            echo "Deleting .store folder..."
+            rm -rf .store
+            echo ".store folder deleted."
+          else
+            echo "No .store folder found. Skipping cleanup."
+          fi
+
+      # Commit and push the changes
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "dbavisi"
+          git config --global user.email "dwij@dbavisi.net"
+          git add -A
+          git commit -m "Cleaned up .store folder on [$(date)]"
+          git push origin main
