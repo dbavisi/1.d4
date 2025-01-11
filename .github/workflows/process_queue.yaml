@@ -5,6 +5,9 @@ on:
     - cron: "*/48 * * * *" # Every 48 minutes
   workflow_dispatch: # Allow manual triggering as well
 
+permissions:
+  contents: write
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
