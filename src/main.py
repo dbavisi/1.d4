@@ -13,7 +13,7 @@ except Exception as exp:
     from core.handler import Handler
     from pack import pack, process_queue
 
-if path.exists(path.join('..', '.store')):
+if path.exists('.store'):
     process_queue(True)
     process_queue(False)
 else:

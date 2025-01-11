@@ -10,9 +10,8 @@ except Exception as exp:
     from core.state import Modes, Flags, State
     from core.handler import Handler
 
-root_dir = '..'
-store_dir = path.join(root_dir, '.store')
-
+store_dir = '.store'
+print(path.abspath(store_dir))
 
 def pack(handler: Handler):
     mode_dir = path.join(store_dir,
@@ -30,6 +29,7 @@ def pack(handler: Handler):
         mkdir(alt_mode_dir)
 
     if path.exists(file_name) and path.isfile(file_name):
+        print('Already exists:', file_name)
         return
 
     with open(queue_file_name, 'ab+') as queue:
@@ -53,7 +53,9 @@ def pack(handler: Handler):
 
                     new_state_hex_str = new_state.to_hex()
                     new_state_file_name = path.join(alt_mode_dir, new_state_hex_str + '.raw')
+
                     if not path.exists(new_state_file_name):
+                        print('Enqueue:', new_state_hex_str)
                         queue.write(new_state_bytes)
 
 
@@ -75,6 +77,7 @@ def process_queue(dark_mode: bool, batch_size=500):
                     if not state:
                         break
                     handler = Handler(dark_mode, from_bytes=state)
+                    print('Processing', handler.state.to_hex())
                     pack(handler)
                     count += 1
                 else:
