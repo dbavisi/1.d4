@@ -4,12 +4,23 @@ Modes, Unicodes, Flags, and DebugModes.
 Classes
 -------
 - Modes: Enumeration for modes.
-    Attributes:
+- Unicodes: Enumeration for Unicode characters used in the state representation.
+- Flags: Enumeration for flags used in the state representation.
+- DebugModes: Enumeration for debug modes.
+
+Dictionaries
+------------
+- Flag2Unicode: Mapping of flag values to Unicode characters.
+
+Modes
+-----
+- Attributes
     - Light: Light mode.
     - Dark: Dark mode.
 
-- Unicodes: Enumeration for Unicode characters used in the state representation.
-    Attributes:
+Unicodes
+--------
+- Attributes
     - Outlined_Monotone: Unicode for outlined monotone.
     - Outlined_Pivot: Unicode for outlined pivot.
     - Outlined_Slope: Unicode for outlined slope.
@@ -25,8 +36,9 @@ Classes
     - Void_Unicode: Unicode for void.
     - Invalid_Unicode: Unicode for invalid.
 
-- Flags: Enumeration for flags used in the state representation.
-    Attributes:
+Flags
+-----
+- Attributes
     - Void: Void flag.
     - Light_Monotone: Light monotone flag.
     - Light_Pivot: Light pivot flag.
@@ -42,21 +54,21 @@ Classes
     - Dark_Radius: Dark radius flag.
     - Dark_Anchor: Dark anchor flag.
 
-- DebugModes: Enumeration for debug modes.
-    Attributes:
+DebugModes
+----------
+- Attributes
     - Release: Release mode.
     - Innovation: Innovation mode.
-
-Dictionaries
-------------
-- Flag2Unicode: Mapping of flag values to Unicode characters.
 
 Testing and QA
 ==============
 Classes
 -------
 - TestConstants: Unit tests for the constants.
-    Methods:
+
+TestConstants
+-------------
+- Methods
     - test_modes_enum: Test the Modes enumeration values.
     - test_unicodes_enum: Test the Unicodes enumeration values.
     - test_flags_enum: Test the Flags enumeration values.

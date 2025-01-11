@@ -4,10 +4,13 @@ States and interface for encoding and decoding states.
 Classes
 -------
 - State: Represents the state of the system with methods to convert between different representations.
-    Attributes:
+
+State
+-----
+- Attributes
     - state: The internal state represented as a numpy array.
 
-    Methods:
+- Methods
     - __init__: Initializes a new instance of State.
     - to_matrix: Converts State into a 64-element uint8 matrix.
     - from_matrix: Loads State from a 64-element uint8 matrix.
@@ -21,7 +24,10 @@ Testing and QA
 Classes
 -------
 - TestState: Unit tests for the State class.
-    Methods:
+
+TestState
+---------
+- Methods
     - setUp: Sets up the test case environment.
     - test_to_matrix: Tests the to_matrix method.
     - test_from_matrix: Tests the from_matrix method.
@@ -40,7 +46,7 @@ class State:
     """
     Represents the state of the system with methods to convert between different representations.
     """
-    def __init__(self) -> None:
+    def __init__(self):
         """
         Initializes a new instance of State.
         """
