@@ -7,11 +7,14 @@ from src.core.constants import Flags, STORE_DIR
 from src.core.state import State
 from src.core.handler import Handler
 from src.core.store import pack, process_queue
+from src.core.utils import buglog
 
 if path.exists(STORE_DIR):
+    buglog("Processing existing store directory")
     process_queue(True)
     process_queue(False)
 else:
+    buglog("Creating new store directory")
     # Standard state
     init_state = np.array([
         [
@@ -45,4 +48,5 @@ else:
 
     # Create instance of Handler and load standard state
     handler = Handler(dark_mode=False, hex_str=init_state_hex_str)
+    buglog(f"Initialized handler with state: {handler.state.to_hex()}")
     pack(handler)

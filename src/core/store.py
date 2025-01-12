@@ -3,12 +3,10 @@ Utility for packing and unpacking states and handlers, and managing directory pa
 
 Functions
 ---------
-- ensure_directories_exist: Ensures that the specified directories exist.
 - write_state_to_store: Writes the state information to the store file.
 - partitioned_filename: Returns a partitioned filename by splitting the hex string into groups of 16 characters.
 - pack: Packs the handler's state and possible rules into files.
 - process_queue: Processes the queue of states for a given mode.
-- check_and_create_path: Checks and creates the specified path if it does not exist.
 
 Classes
 -------
@@ -33,16 +31,9 @@ Classes
         - next_reader: Switches to the next reader file.
         - write: Writes data to the queue.
         - read: Reads data from the queue.
-
-- DirectoryTrie: A trie-like structure for storing and checking directory paths.
-    - Attributes:
-        - root: Root node of the trie.
-    - Methods:
-        - insert: Inserts a directory path into the trie.
-        - exists: Checks if a directory path exists in the trie.
 """
-from os import path, listdir, makedirs, replace, remove, getenv
-import time
+from os import path, listdir, replace, remove, getenv
+from datetime import datetime
 from .constants import (
     Modes, Flags, DebugModes,
     STORE_DIR, HANDLER_DIR, QUEUE_DIR, FILE_EXTENSION,
@@ -50,28 +41,7 @@ from .constants import (
 )
 from .state import State
 from .handler import Handler
-
-# DirectoryTrie class
-class DirectoryTrie:
-    def __init__(self):
-        self.root = {}
-
-    def insert(self, directory_path):
-        parts = directory_path.split(path.sep)
-        node = self.root
-        for part in parts:
-            if part not in node:
-                node[part] = {}
-            node = node[part]
-
-    def exists(self, directory_path):
-        parts = directory_path.split(path.sep)
-        node = self.root
-        for part in parts:
-            if part not in node:
-                return False
-            node = node[part]
-        return True
+from .utils import buglog, check_and_create_path, DirectoryTrie
 
 directory_trie = DirectoryTrie()
 
@@ -99,7 +69,8 @@ class QueueController:
     @staticmethod
     def generate_file_name(parent_dir, temp=False):
         prefix = 'temp_' if temp else 'queue_'
-        return path.join(parent_dir, f'{prefix}{int(time.time())}{FILE_EXTENSION}')
+        timestamp = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
+        return path.join(parent_dir, f'{prefix}{timestamp}{FILE_EXTENSION}')
 
     def __enter__(self):
         self.usage_count += 1
@@ -125,6 +96,7 @@ class QueueController:
         self.active_writer_name = self.generate_file_name(self.parent_dir)
 
         self.active_writer = open(self.active_writer_name, 'wb')
+        buglog(f"Switched to next writer: {self.active_writer_name}")
 
     def next_reader(self):
         if self.active_reader:
@@ -136,11 +108,12 @@ class QueueController:
 
         if len(self.queue_files) == 0:
             self.queue_files = sorted(path.join(self.parent_dir, f) for f in listdir(self.parent_dir))
-            print(f"Queue files: {self.queue_files}")
+            buglog(f"Queue files: {self.queue_files}")
 
         if self.active_reader_index < len(self.queue_files):
             self.active_reader_name = self.queue_files[self.active_reader_index]
             self.active_reader = open(self.active_reader_name, 'rb')
+            buglog(f"Switched to next reader: {self.active_reader_name}")
 
     def write(self, data):
         if self.active_writer is None:
@@ -163,39 +136,6 @@ class QueueController:
             yield data
 
 # Functions
-def check_and_create_path(path_to_check: str, is_file: bool = False, create_dir: bool = False) -> bool:
-    """
-    Checks and creates the specified path if it does not exist.
-
-    Parameters
-    ----------
-    path_to_check : str
-        The path to check.
-    is_file : bool, optional
-        Whether the path is a file, by default False.
-    create_dir : bool, optional
-        Whether to create the directory if it does not exist, by default False.
-
-    Returns
-    -------
-    bool
-        True if the path exists or was created, False otherwise.
-    """
-    if not directory_trie.exists(path_to_check):
-        if not path.exists(path_to_check):
-            if is_file:
-                if create_dir:
-                    dir_name = path.dirname(path_to_check)
-                    makedirs(dir_name, exist_ok=True)
-                    directory_trie.insert(dir_name)
-                return False
-            else:
-                makedirs(path_to_check, exist_ok=True)
-                directory_trie.insert(path_to_check)
-        else:
-            directory_trie.insert(path_to_check)
-    return True
-
 def write_state_to_store(store, source: int, destination: int, new_state_bytes: bytes) -> None:
     """
     Writes the state information to the store file.
@@ -211,8 +151,11 @@ def write_state_to_store(store, source: int, destination: int, new_state_bytes: 
     new_state_bytes : bytes
         The state information in bytes.
     """
-    store.write(bytes([0x78, source, destination]))
-    store.write(new_state_bytes)
+    store.write(bytes([source, destination]))
+
+    # ToDo: Decide on the format for the store file
+    # store.write(bytes([0x78, source, destination]))
+    # store.write(new_state_bytes)
 
 def partitioned_filename(parent_dir: str, hex_str: str) -> str:
     """
@@ -230,7 +173,7 @@ def partitioned_filename(parent_dir: str, hex_str: str) -> str:
     str
         The partitioned filename.
     """
-    step = 16
+    step = 8
     parts = [hex_str[i:i + step] for i in range(0, len(hex_str) - 2 * step, step)]
     return path.join(parent_dir, *parts, hex_str + FILE_EXTENSION)
 
@@ -258,7 +201,7 @@ def pack(handler: Handler, qc: QueueController = None) -> bool:
     check_and_create_path(alt_mode_dir)
 
     if check_and_create_path(file_name, is_file=True, create_dir=True):
-        print(f"Found pack: {file_name}")
+        buglog(f"SKipped re-pack: {file_name}")
         return False
 
     if qc is None:
@@ -266,6 +209,7 @@ def pack(handler: Handler, qc: QueueController = None) -> bool:
         check_and_create_path(alt_queue_dir, create_dir=True)
         qc = QueueController(alt_queue_dir)
 
+    buglog(f"Packing handler state: {handler.state.to_hex()}")
     with qc, open(file_name, 'wb') as store:
         for (horizon, axis), possible_rules in handler.all_possible_rules():
             source = (horizon << 4) | axis
@@ -288,9 +232,10 @@ def pack(handler: Handler, qc: QueueController = None) -> bool:
 
                 if not check_and_create_path(new_state_file_name, is_file=True):
                     qc.write(new_state_bytes)
-                    # print(f"Enqueued: {new_state_file_name}")
+                    buglog(f"Enqueued: {new_state_file_name}")
                 else:
-                    print(f"Skipped re-pack: {new_state_file_name}")
+                    buglog(f"Found: {new_state_file_name}")
+    buglog(f"Packed handler state: {handler.state.to_hex()}")
     return True
 
 def process_queue(dark_mode: bool, batch_size: int = MAX_PROCESS_QUEUE) -> None:
@@ -318,6 +263,7 @@ def process_queue(dark_mode: bool, batch_size: int = MAX_PROCESS_QUEUE) -> None:
             handler = Handler(dark_mode, from_bytes=state)
             if pack(handler, alt_qc):
                 count += 1
+    buglog(f"Processed queue: dark_mode={dark_mode}, batch_size={batch_size}")
 
 if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
     if __name__ == '__main__':
@@ -355,7 +301,7 @@ if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
 
         handler = Handler(dark_mode=False, hex_str=init_state_hex_str)
 
-        print(handler.state)
+        buglog(str(handler.state))
         pack(handler)
 
         handler.dark_mode = True
