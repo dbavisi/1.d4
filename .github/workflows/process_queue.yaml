@@ -1,8 +1,8 @@
-name: Run Python Script Every 2 Hours
+name: Run Python Script Every 4 Hours
 
 on:
   schedule:
-    - cron: "0 */2 * * *" # Every 2 hours
+    - cron: "0 */4 * * *" # Every 4 hours
   workflow_dispatch: # Allow manual triggering as well
 
 permissions:
@@ -31,7 +31,7 @@ jobs:
 
       # Run the script
       - name: Run Python script
-        run: python src/main.py
+        run: python main.py
 
       # Check for changes
       # - name: Check for changes
