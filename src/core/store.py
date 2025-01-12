@@ -43,13 +43,13 @@ Classes
 """
 from os import path, listdir, makedirs, replace, remove, getenv
 import time
-from .core.constants import (
+from .constants import (
     Modes, Flags, DebugModes,
     STORE_DIR, HANDLER_DIR, QUEUE_DIR, FILE_EXTENSION,
     MAX_PROCESS_QUEUE, MAX_QUEUE_SIZE
 )
-from .core.state import State
-from .core.handler import Handler
+from .state import State
+from .handler import Handler
 
 # DirectoryTrie class
 class DirectoryTrie:

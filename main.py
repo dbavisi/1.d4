@@ -6,7 +6,7 @@ import numpy as np
 from src.core.constants import Flags, STORE_DIR
 from src.core.state import State
 from src.core.handler import Handler
-from src.store import pack, process_queue
+from src.core.store import pack, process_queue
 
 if path.exists(STORE_DIR):
     process_queue(True)
