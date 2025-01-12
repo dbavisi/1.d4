@@ -1,78 +1,77 @@
 """
-Modes, Unicodes, Flags, and DebugModes.
+Enumerations and constants.
 
 Classes
 -------
 - Modes: Enumeration for modes.
+    - Attributes:
+        - LIGHT: Light mode.
+        - DARK: Dark mode.
+
+- ModeCheck: Enumeration for mode check results.
+    - Attributes:
+        - VOID: Represents a void flag.
+        - SAME_MODE: Represents a flag of the same mode.
+        - DIFFERENT_MODE: Represents a flag of a different mode.
+
 - Unicodes: Enumeration for Unicode characters used in the state representation.
+    - Attributes:
+        - OUTLINED_MONOTONE: Outlined monotone Unicode character.
+        - OUTLINE_PIVOT: Outline pivot Unicode character.
+        - OUTLINED_SLOPE: Outlined slope Unicode character.
+        - OUTLINED_STRIDE: Outlined stride Unicode character.
+        - OUTLINED_RADIUS: Outlined radius Unicode character.
+        - OUTLINED_ANCHOR: Outlined anchor Unicode character.
+        - FILLED_MONOTONE: Filled monotone Unicode character.
+        - FILLED_PIVOT: Filled pivot Unicode character.
+        - FILLED_SLOPE: Filled slope Unicode character.
+        - FILLED_STRIDE: Filled stride Unicode character.
+        - FILLED_RADIUS: Filled radius Unicode character.
+        - FILLED_ANCHOR: Filled anchor Unicode character.
+        - VOID_UNICODE: Void Unicode character.
+        - INVALID_UNICODE: Invalid Unicode character.
+
 - Flags: Enumeration for flags used in the state representation.
+    - Attributes:
+        - VOID: Void flag.
+        - LIGHT_MONOTONE: Light monotone flag.
+        - LIGHT_PIVOT: Light pivot flag.
+        - LIGHT_SLOPE: Light slope flag.
+        - LIGHT_STRIDE: Light stride flag.
+        - LIGHT_RADIUS: Light radius flag.
+        - LIGHT_ANCHOR: Light anchor flag.
+        - HORIZON: Horizon flag.
+        - DARK_MONOTONE: Dark monotone flag.
+        - DARK_PIVOT: Dark pivot flag.
+        - DARK_SLOPE: Dark slope flag.
+        - DARK_STRIDE: Dark stride flag.
+        - DARK_RADIUS: Dark radius flag.
+        - DARK_ANCHOR: Dark anchor flag.
+
 - DebugModes: Enumeration for debug modes.
+    - Attributes:
+        - RELEASE: Release mode.
+        - INNOVATION: Innovation mode.
 
-Dictionaries
-------------
-- Flag2Unicode: Mapping of flag values to Unicode characters.
-
-Modes
------
-- Attributes
-    - Light: Light mode.
-    - Dark: Dark mode.
-
-Unicodes
---------
-- Attributes
-    - Outlined_Monotone: Unicode for outlined monotone.
-    - Outlined_Pivot: Unicode for outlined pivot.
-    - Outlined_Slope: Unicode for outlined slope.
-    - Outlined_Stride: Unicode for outlined stride.
-    - Outlined_Radius: Unicode for outlined radius.
-    - Outlined_Anchor: Unicode for outlined anchor.
-    - Filled_Monotone: Unicode for filled monotone.
-    - Filled_Pivot: Unicode for filled pivot.
-    - Filled_Slope: Unicode for filled slope.
-    - Filled_Stride: Unicode for filled stride.
-    - Filled_Radius: Unicode for filled radius.
-    - Filled_Anchor: Unicode for filled anchor.
-    - Void_Unicode: Unicode for void.
-    - Invalid_Unicode: Unicode for invalid.
-
-Flags
------
-- Attributes
-    - Void: Void flag.
-    - Light_Monotone: Light monotone flag.
-    - Light_Pivot: Light pivot flag.
-    - Light_Slope: Light slope flag.
-    - Light_Stride: Light stride flag.
-    - Light_Radius: Light radius flag.
-    - Light_Anchor: Light anchor flag.
-    - Horizon: Horizon flag.
-    - Dark_Monotone: Dark monotone flag.
-    - Dark_Pivot: Dark pivot flag.
-    - Dark_Slope: Dark slope flag.
-    - Dark_Stride: Dark stride flag.
-    - Dark_Radius: Dark radius flag.
-    - Dark_Anchor: Dark anchor flag.
-
-DebugModes
-----------
-- Attributes
-    - Release: Release mode.
-    - Innovation: Innovation mode.
+Constants
+---------
+- FLAG2UNICODE: Mapping of flag values to Unicode characters.
+- STORE_DIR: Directory where the store files are saved.
+- HANDLER_DIR: Directory where the handler files are saved.
+- QUEUE_DIR: Directory where the queue files are saved.
+- FILE_EXTENSION: File extension for the stored files.
+- MAX_QUEUE_SIZE: Maximum size of the queue in bytes.
 
 Testing and QA
 ==============
 Classes
 -------
 - TestConstants: Unit tests for the constants.
-
-TestConstants
--------------
-- Methods
-    - test_modes_enum: Test the Modes enumeration values.
-    - test_unicodes_enum: Test the Unicodes enumeration values.
-    - test_flags_enum: Test the Flags enumeration values.
-    - test_flag2unicode_mapping: Test the Flag2Unicode dictionary mapping.
+    - Methods:
+        - test_modes_enum: Test the Modes enumeration values.
+        - test_unicodes_enum: Test the Unicodes enumeration values.
+        - test_flags_enum: Test the Flags enumeration values.
+        - test_flag2unicode_mapping: Test the Flag2Unicode dictionary mapping.
 """
 from enum import Enum
 from os import getenv
@@ -81,78 +80,94 @@ class Modes(Enum):
     """
     Enumeration for modes.
     """
-    Light = 'light'
-    Dark = 'dark'
+    LIGHT = 'light'
+    DARK = 'dark'
+
+class ModeCheck(Enum):
+    """
+    Enumeration for mode check results.
+    """
+    VOID = 0
+    SAME_MODE = 1
+    DIFFERENT_MODE = -1
 
 class Unicodes(Enum):
     """
     Enumeration for Unicode characters used in the state representation.
     """
-    Outlined_Monotone = '♙'
-    Outlined_Pivot = '♘'
-    Outlined_Slope = '♗'
-    Outlined_Stride = '♖'
-    Outlined_Radius = '♕'
-    Outlined_Anchor = '♔'
+    OUTLINED_MONOTONE = '♙'
+    OUTLINE_PIVOT = '♘'
+    OUTLINED_SLOPE = '♗'
+    OUTLINED_STRIDE = '♖'
+    OUTLINED_RADIUS = '♕'
+    OUTLINED_ANCHOR = '♔'
 
-    Filled_Monotone = '♟'
-    Filled_Pivot = '♞'
-    Filled_Slope = '♝'
-    Filled_Stride = '♜'
-    Filled_Radius = '♛'
-    Filled_Anchor = '♚'
+    FILLED_MONOTONE = '♟'
+    FILLED_PIVOT = '♞'
+    FILLED_SLOPE = '♝'
+    FILLED_STRIDE = '♜'
+    FILLED_RADIUS = '♛'
+    FILLED_ANCHOR = '♚'
 
-    Void_Unicode = '　'
-    Invalid_Unicode = '⁇'
+    VOID_UNICODE = '　'
+    INVALID_UNICODE = '⁇'
 
 class Flags(Enum):
     """
     Enumeration for flags used in the state representation.
     """
-    Void = 0x0
+    VOID = 0x0
 
-    Light_Monotone = 0x1
-    Light_Pivot = 0x2
-    Light_Slope = 0x3
-    Light_Stride = 0x4
-    Light_Radius = 0x5
-    Light_Anchor = 0x6
+    LIGHT_MONOTONE = 0x1
+    LIGHT_PIVOT = 0x2
+    LIGHT_SLOPE = 0x3
+    LIGHT_STRIDE = 0x4
+    LIGHT_RADIUS = 0x5
+    LIGHT_ANCHOR = 0x6
 
-    Horizon = 0x8
+    HORIZON = 0x8
 
-    Dark_Monotone = 0xA
-    Dark_Pivot = 0xB
-    Dark_Slope = 0XC
-    Dark_Stride = 0xD
-    Dark_Radius = 0xE
-    Dark_Anchor = 0xF
+    DARK_MONOTONE = 0xA
+    DARK_PIVOT = 0xB
+    DARK_SLOPE = 0XC
+    DARK_STRIDE = 0xD
+    DARK_RADIUS = 0xE
+    DARK_ANCHOR = 0xF
 
 class DebugModes(Enum):
     """
     Enumeration for debug modes.
     """
-    Release = 'release'
-    Innovation = 'innovation'
+    RELEASE = 'release'
+    INNOVATION = 'innovation'
 
-Flag2Unicode = {
-    Flags.Void.value: Unicodes.Void_Unicode.value,
+FLAG2UNICODE: dict[int, str] = {
+    Flags.VOID.value: Unicodes.VOID_UNICODE.value,
 
-    Flags.Light_Monotone.value: Unicodes.Outlined_Monotone.value,
-    Flags.Light_Pivot.value: Unicodes.Outlined_Pivot.value,
-    Flags.Light_Slope.value: Unicodes.Outlined_Slope.value,
-    Flags.Light_Stride.value: Unicodes.Outlined_Stride.value,
-    Flags.Light_Radius.value: Unicodes.Outlined_Radius.value,
-    Flags.Light_Anchor.value: Unicodes.Outlined_Anchor.value,
+    Flags.LIGHT_MONOTONE.value: Unicodes.OUTLINED_MONOTONE.value,
+    Flags.LIGHT_PIVOT.value: Unicodes.OUTLINE_PIVOT.value,
+    Flags.LIGHT_SLOPE.value: Unicodes.OUTLINED_SLOPE.value,
+    Flags.LIGHT_STRIDE.value: Unicodes.OUTLINED_STRIDE.value,
+    Flags.LIGHT_RADIUS.value: Unicodes.OUTLINED_RADIUS.value,
+    Flags.LIGHT_ANCHOR.value: Unicodes.OUTLINED_ANCHOR.value,
 
-    Flags.Dark_Monotone.value: Unicodes.Filled_Monotone.value,
-    Flags.Dark_Pivot.value: Unicodes.Filled_Pivot.value,
-    Flags.Dark_Slope.value: Unicodes.Filled_Slope.value,
-    Flags.Dark_Stride.value: Unicodes.Filled_Stride.value,
-    Flags.Dark_Radius.value: Unicodes.Filled_Radius.value,
-    Flags.Dark_Anchor.value: Unicodes.Filled_Anchor.value,
+    Flags.DARK_MONOTONE.value: Unicodes.FILLED_MONOTONE.value,
+    Flags.DARK_PIVOT.value: Unicodes.FILLED_PIVOT.value,
+    Flags.DARK_SLOPE.value: Unicodes.FILLED_SLOPE.value,
+    Flags.DARK_STRIDE.value: Unicodes.FILLED_STRIDE.value,
+    Flags.DARK_RADIUS.value: Unicodes.FILLED_RADIUS.value,
+    Flags.DARK_ANCHOR.value: Unicodes.FILLED_ANCHOR.value,
 }
 
-if getenv('DEBUGMODE') == DebugModes.Innovation.value:
+STORE_DIR: str = '.store'
+HANDLER_DIR: str = '.handlers'
+QUEUE_DIR: str = '.queue'
+FILE_EXTENSION: str = '.raw'
+
+MAX_PROCESS_QUEUE: int = 8192
+MAX_QUEUE_SIZE: int = MAX_PROCESS_QUEUE * 32
+
+if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
     import unittest
 
     class TestConstants(unittest.TestCase):
@@ -164,64 +179,82 @@ if getenv('DEBUGMODE') == DebugModes.Innovation.value:
             """
             Test the Modes enumeration values.
             """
-            self.assertEqual(Modes.Light.value, 'light')
-            self.assertEqual(Modes.Dark.value, 'dark')
+            self.assertEqual(Modes.LIGHT.value, 'light')
+            self.assertEqual(Modes.DARK.value, 'dark')
+
+        def test_modecheck_enum(self):
+            """
+            Test the ModeCheck enumeration values.
+            """
+            self.assertEqual(ModeCheck.VOID.value, 0)
+            self.assertEqual(ModeCheck.SAME_MODE.value, 1)
+            self.assertEqual(ModeCheck.DIFFERENT_MODE.value, -1)
 
         def test_unicodes_enum(self):
             """
             Test the Unicodes enumeration values.
             """
-            self.assertEqual(Unicodes.Outlined_Monotone.value, '♙')
-            self.assertEqual(Unicodes.Outlined_Pivot.value, '♘')
-            self.assertEqual(Unicodes.Outlined_Slope.value, '♗')
-            self.assertEqual(Unicodes.Outlined_Stride.value, '♖')
-            self.assertEqual(Unicodes.Outlined_Radius.value, '♕')
-            self.assertEqual(Unicodes.Outlined_Anchor.value, '♔')
-            self.assertEqual(Unicodes.Filled_Monotone.value, '♟')
-            self.assertEqual(Unicodes.Filled_Pivot.value, '♞')
-            self.assertEqual(Unicodes.Filled_Slope.value, '♝')
-            self.assertEqual(Unicodes.Filled_Stride.value, '♜')
-            self.assertEqual(Unicodes.Filled_Radius.value, '♛')
-            self.assertEqual(Unicodes.Filled_Anchor.value, '♚')
-            self.assertEqual(Unicodes.Void_Unicode.value, '　')
-            self.assertEqual(Unicodes.Invalid_Unicode.value, '⁇')
+            self.assertEqual(Unicodes.OUTLINED_MONOTONE.value, '♙')
+            self.assertEqual(Unicodes.OUTLINE_PIVOT.value, '♘')
+            self.assertEqual(Unicodes.OUTLINED_SLOPE.value, '♗')
+            self.assertEqual(Unicodes.OUTLINED_STRIDE.value, '♖')
+            self.assertEqual(Unicodes.OUTLINED_RADIUS.value, '♕')
+            self.assertEqual(Unicodes.OUTLINED_ANCHOR.value, '♔')
+            self.assertEqual(Unicodes.FILLED_MONOTONE.value, '♟')
+            self.assertEqual(Unicodes.FILLED_PIVOT.value, '♞')
+            self.assertEqual(Unicodes.FILLED_SLOPE.value, '♝')
+            self.assertEqual(Unicodes.FILLED_STRIDE.value, '♜')
+            self.assertEqual(Unicodes.FILLED_RADIUS.value, '♛')
+            self.assertEqual(Unicodes.FILLED_ANCHOR.value, '♚')
+            self.assertEqual(Unicodes.VOID_UNICODE.value, '　')
+            self.assertEqual(Unicodes.INVALID_UNICODE.value, '⁇')
 
         def test_flags_enum(self):
             """
             Test the Flags enumeration values.
             """
-            self.assertEqual(Flags.Void.value, 0x0)
-            self.assertEqual(Flags.Light_Monotone.value, 0x1)
-            self.assertEqual(Flags.Light_Pivot.value, 0x2)
-            self.assertEqual(Flags.Light_Slope.value, 0x3)
-            self.assertEqual(Flags.Light_Stride.value, 0x4)
-            self.assertEqual(Flags.Light_Radius.value, 0x5)
-            self.assertEqual(Flags.Light_Anchor.value, 0x6)
-            self.assertEqual(Flags.Horizon.value, 0x8)
-            self.assertEqual(Flags.Dark_Monotone.value, 0xA)
-            self.assertEqual(Flags.Dark_Pivot.value, 0xB)
-            self.assertEqual(Flags.Dark_Slope.value, 0xC)
-            self.assertEqual(Flags.Dark_Stride.value, 0xD)
-            self.assertEqual(Flags.Dark_Radius.value, 0xE)
-            self.assertEqual(Flags.Dark_Anchor.value, 0xF)
+            self.assertEqual(Flags.VOID.value, 0x0)
+            self.assertEqual(Flags.LIGHT_MONOTONE.value, 0x1)
+            self.assertEqual(Flags.LIGHT_PIVOT.value, 0x2)
+            self.assertEqual(Flags.LIGHT_SLOPE.value, 0x3)
+            self.assertEqual(Flags.LIGHT_STRIDE.value, 0x4)
+            self.assertEqual(Flags.LIGHT_RADIUS.value, 0x5)
+            self.assertEqual(Flags.LIGHT_ANCHOR.value, 0x6)
+            self.assertEqual(Flags.HORIZON.value, 0x8)
+            self.assertEqual(Flags.DARK_MONOTONE.value, 0xA)
+            self.assertEqual(Flags.DARK_PIVOT.value, 0xB)
+            self.assertEqual(Flags.DARK_SLOPE.value, 0xC)
+            self.assertEqual(Flags.DARK_STRIDE.value, 0xD)
+            self.assertEqual(Flags.DARK_RADIUS.value, 0xE)
+            self.assertEqual(Flags.DARK_ANCHOR.value, 0xF)
 
         def test_flag2unicode_mapping(self):
             """
             Test the Flag2Unicode dictionary mapping.
             """
-            self.assertEqual(Flag2Unicode[Flags.Void.value], Unicodes.Void_Unicode.value)
-            self.assertEqual(Flag2Unicode[Flags.Light_Monotone.value], Unicodes.Outlined_Monotone.value)
-            self.assertEqual(Flag2Unicode[Flags.Light_Pivot.value], Unicodes.Outlined_Pivot.value)
-            self.assertEqual(Flag2Unicode[Flags.Light_Slope.value], Unicodes.Outlined_Slope.value)
-            self.assertEqual(Flag2Unicode[Flags.Light_Stride.value], Unicodes.Outlined_Stride.value)
-            self.assertEqual(Flag2Unicode[Flags.Light_Radius.value], Unicodes.Outlined_Radius.value)
-            self.assertEqual(Flag2Unicode[Flags.Light_Anchor.value], Unicodes.Outlined_Anchor.value)
-            self.assertEqual(Flag2Unicode[Flags.Dark_Monotone.value], Unicodes.Filled_Monotone.value)
-            self.assertEqual(Flag2Unicode[Flags.Dark_Pivot.value], Unicodes.Filled_Pivot.value)
-            self.assertEqual(Flag2Unicode[Flags.Dark_Slope.value], Unicodes.Filled_Slope.value)
-            self.assertEqual(Flag2Unicode[Flags.Dark_Stride.value], Unicodes.Filled_Stride.value)
-            self.assertEqual(Flag2Unicode[Flags.Dark_Radius.value], Unicodes.Filled_Radius.value)
-            self.assertEqual(Flag2Unicode[Flags.Dark_Anchor.value], Unicodes.Filled_Anchor.value)
+            self.assertEqual(FLAG2UNICODE[Flags.VOID.value], Unicodes.VOID_UNICODE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.LIGHT_MONOTONE.value], Unicodes.OUTLINED_MONOTONE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.LIGHT_PIVOT.value], Unicodes.OUTLINE_PIVOT.value)
+            self.assertEqual(FLAG2UNICODE[Flags.LIGHT_SLOPE.value], Unicodes.OUTLINED_SLOPE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.LIGHT_STRIDE.value], Unicodes.OUTLINED_STRIDE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.LIGHT_RADIUS.value], Unicodes.OUTLINED_RADIUS.value)
+            self.assertEqual(FLAG2UNICODE[Flags.LIGHT_ANCHOR.value], Unicodes.OUTLINED_ANCHOR.value)
+            self.assertEqual(FLAG2UNICODE[Flags.DARK_MONOTONE.value], Unicodes.FILLED_MONOTONE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.DARK_PIVOT.value], Unicodes.FILLED_PIVOT.value)
+            self.assertEqual(FLAG2UNICODE[Flags.DARK_SLOPE.value], Unicodes.FILLED_SLOPE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.DARK_STRIDE.value], Unicodes.FILLED_STRIDE.value)
+            self.assertEqual(FLAG2UNICODE[Flags.DARK_RADIUS.value], Unicodes.FILLED_RADIUS.value)
+            self.assertEqual(FLAG2UNICODE[Flags.DARK_ANCHOR.value], Unicodes.FILLED_ANCHOR.value)
+
+        def test_constants(self):
+            """
+            Test the constants values.
+            """
+            self.assertEqual(STORE_DIR, '.store')
+            self.assertEqual(HANDLER_DIR, '.handlers')
+            self.assertEqual(QUEUE_DIR, '.queue')
+            self.assertEqual(FILE_EXTENSION, '.raw')
+            self.assertEqual(MAX_QUEUE_SIZE, 1024 * 1024)
 
     if __name__ == '__main__':
         unittest.main()

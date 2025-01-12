@@ -3,71 +3,43 @@ Utility for managing state transition rules.
 
 Classes
 -------
-- ModeCheck: Enumeration for mode check results.
 - Handler: Manages state transition rules based on the current state and mode.
+    - Attributes:
+        - state: The current state of the system.
+        - dark_mode: Boolean indicating if the handler is in dark mode.
+        - unsafe_anchor: Boolean indicating if the handler is in unsafe anchor mode.
+        - matrix: The state represented as a matrix.
+        - alternate_handler: An alternate handler for unsafe anchor mode.
+        - alternate_rules: A list of alternate rules for unsafe anchor mode.
+    - Methods:
+        - __init__: Initializes a new instance of Handler.
+        - test_mode: Checks if the flag at a given axis and horizon is of the same mode as Handler.
+        - rule_monotone: Computes all possible rules for a Monotone.
+        - rule_pivot: Computes all possible rules for a Pivot.
+        - compute_rules: Utility method to compute rules based on orientations.
+        - rule_slope: Computes all possible rules for a Slope.
+        - rule_stride: Computes all possible rules for a Stride.
+        - rule_radius: Computes all possible rules for a Radius.
+        - rule_anchor: Computes all possible rules for an Anchor.
+        - all_possible_rules: Computes all possible rules for all flags in the current state.
 
 Functions
 ---------
 - inbounds: Checks if a value is within the range [0, 7] inclusive.
-
-ModeCheck
----------
-- Attributes
-    - VOID: Represents a void flag.
-    - SAME_MODE: Represents a flag of the same mode.
-    - DIFFERENT_MODE: Represents a flag of a different mode.
-
-Handler
--------
-- Attributes
-    - state: The current state of the system.
-    - dark_mode: Boolean indicating if the handler is in dark mode.
-    - unsafe_anchor: Boolean indicating if the handler is in unsafe anchor mode.
-    - matrix: The state represented as a matrix.
-    - alternate_handler: An alternate handler for unsafe anchor mode.
-    - alternate_rules: A list of alternate rules for unsafe anchor mode.
-
-- Methods
-    - __init__: Initializes a new instance of Handler.
-    - test_mode: Checks if the flag at a given axis and horizon is of the same mode as Handler.
-    - rule_monotone: Computes all possible rules for a Monotone.
-    - rule_pivot: Computes all possible rules for a Pivot.
-    - compute_rules: Utility method to compute rules based on orientations.
-    - rule_slope: Computes all possible rules for a Slope.
-    - rule_stride: Computes all possible rules for a Stride.
-    - rule_radius: Computes all possible rules for a Radius.
-    - rule_anchor: Computes all possible rules for an Anchor.
-    - all_possible_rules: Computes all possible rules for all flags in the current state.
 
 Testing and QA
 ==============
 Classes
 -------
 - TestHandler: Unit tests for the Handler class.
-
-TestHandler
------------
-- Methods
-    - setUp: Sets up the test case environment.
-    - test_handler: Tests the Handler class.
+    - Methods:
+        - setUp: Sets up the test case environment.
+        - test_handler: Tests the Handler class.
 """
 from os import getenv
 import numpy as np
-from enum import Enum
-if __package__ is None or __package__ == '':
-    from constants import Flags, DebugModes
-    from state import State
-else:
-    from .constants import Flags, DebugModes
-    from .state import State
-
-class ModeCheck(Enum):
-    """
-    Enumeration for mode check results.
-    """
-    VOID = 0
-    SAME_MODE = 1
-    DIFFERENT_MODE = -1
+from .constants import ModeCheck, Flags, DebugModes
+from .state import State
 
 def inbounds(value: int) -> bool:
     """
@@ -134,11 +106,11 @@ class Handler:
             ModeCheck.VOID if the flag is void, ModeCheck.SAME_MODE if it is of the same mode, ModeCheck.DIFFERENT_MODE otherwise.
         """
         flag = self.matrix[7 - horizon][axis]
-        if flag == Flags.Void.value:
+        if flag == Flags.VOID.value:
             return ModeCheck.VOID
         if (
-            (self.dark_mode and (flag > Flags.Horizon.value)) or
-            ((not self.dark_mode) and (flag < Flags.Horizon.value))
+            (self.dark_mode and (flag > Flags.HORIZON.value)) or
+            ((not self.dark_mode) and (flag < Flags.HORIZON.value))
         ):
             return ModeCheck.SAME_MODE
         return ModeCheck.DIFFERENT_MODE
@@ -281,7 +253,7 @@ class Handler:
                     possible_rules.append((new_horizon, new_axis))
                     if self.unsafe_anchor:
                         flag = self.matrix[7 - new_horizon][new_axis]
-                        if flag == Flags.Dark_Anchor.value or flag == Flags.Light_Anchor.value:
+                        if flag == Flags.DARK_ANCHOR.value or flag == Flags.LIGHT_ANCHOR.value:
                             # Special case for unsafe anchor mode
                             continue
                     break
@@ -429,7 +401,7 @@ class Handler:
                 for axis in range(8):
                     if self.test_mode(horizon, axis) == ModeCheck.SAME_MODE:
                         flag = self.matrix[7 - horizon][axis]
-                        if flag == Flags.Dark_Anchor.value or flag == Flags.Light_Anchor.value:
+                        if flag == Flags.DARK_ANCHOR.value or flag == Flags.LIGHT_ANCHOR.value:
                             anchor_coord = (horizon, axis)
                             break
                 if anchor_coord:
@@ -448,25 +420,24 @@ class Handler:
             for axis in range(8):
                 if self.test_mode(horizon, axis) == ModeCheck.SAME_MODE:
                     flag = self.matrix[7 - horizon][axis]
-                    if flag == Flags.Dark_Monotone.value or flag == Flags.Light_Monotone.value:
+                    if flag == Flags.DARK_MONOTONE.value or flag == Flags.LIGHT_MONOTONE.value:
                         possible_rules.append(((horizon, axis), self.rule_monotone(horizon, axis)))
-                    elif flag == Flags.Dark_Pivot.value or flag == Flags.Light_Pivot.value:
+                    elif flag == Flags.DARK_PIVOT.value or flag == Flags.LIGHT_PIVOT.value:
                         possible_rules.append(((horizon, axis), self.rule_pivot(horizon, axis)))
-                    elif flag == Flags.Dark_Slope.value or flag == Flags.Light_Slope.value:
+                    elif flag == Flags.DARK_SLOPE.value or flag == Flags.LIGHT_SLOPE.value:
                         possible_rules.append(((horizon, axis), self.rule_slope(horizon, axis)))
-                    elif flag == Flags.Dark_Stride.value or flag == Flags.Light_Stride.value:
+                    elif flag == Flags.DARK_STRIDE.value or flag == Flags.LIGHT_STRIDE.value:
                         possible_rules.append(((horizon, axis), self.rule_stride(horizon, axis)))
-                    elif flag == Flags.Dark_Radius.value or flag == Flags.Light_Radius.value:
+                    elif flag == Flags.DARK_RADIUS.value or flag == Flags.LIGHT_RADIUS.value:
                         possible_rules.append(((horizon, axis), self.rule_radius(horizon, axis)))
-                    elif flag == Flags.Dark_Anchor.value or flag == Flags.Light_Anchor.value:
+                    elif flag == Flags.DARK_ANCHOR.value or flag == Flags.LIGHT_ANCHOR.value:
                         possible_rules.append(((horizon, axis), self.rule_anchor(horizon, axis)))
 
         return possible_rules
 
-if getenv('DEBUGMODE') == DebugModes.Innovation.value:
+if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
     import unittest
-    from constants import Flag2Unicode, TestConstants
-    from state import TestState
+    from .constants import FLAG2UNICODE
 
     class TestHandler(unittest.TestCase):
         """
@@ -480,30 +451,30 @@ if getenv('DEBUGMODE') == DebugModes.Innovation.value:
             # Standard state
             init_state = np.array([
                 [
-                    Flags.Dark_Stride.value,
-                    Flags.Dark_Pivot.value,
-                    Flags.Dark_Slope.value,
+                    Flags.DARK_STRIDE.value,
+                    Flags.DARK_PIVOT.value,
+                    Flags.DARK_SLOPE.value,
                     0,
-                    Flags.Dark_Radius.value,
-                    Flags.Dark_Slope.value,
-                    Flags.Dark_Pivot.value,
-                    Flags.Dark_Stride.value,
+                    Flags.DARK_RADIUS.value,
+                    Flags.DARK_SLOPE.value,
+                    Flags.DARK_PIVOT.value,
+                    Flags.DARK_STRIDE.value,
                 ],
-                [Flags.Dark_Monotone.value] * 4 + [0] * 4,
-                [0, Flags.Dark_Anchor.value, 0, 0, Flags.Light_Anchor.value, 0, 0, 0],
-                [0] * 4 + [Flags.Dark_Monotone.value] * 4,
-                [Flags.Light_Monotone.value] * 8,
+                [Flags.DARK_MONOTONE.value] * 4 + [0] * 4,
+                [0, Flags.DARK_ANCHOR.value, 0, 0, Flags.LIGHT_ANCHOR.value, 0, 0, 0],
+                [0] * 4 + [Flags.DARK_MONOTONE.value] * 4,
+                [Flags.LIGHT_MONOTONE.value] * 8,
                 [0] * 8,
                 [0] * 8,
                 [
-                    Flags.Light_Stride.value,
-                    Flags.Light_Pivot.value,
-                    Flags.Light_Slope.value,
-                    Flags.Light_Radius.value,
+                    Flags.LIGHT_STRIDE.value,
+                    Flags.LIGHT_PIVOT.value,
+                    Flags.LIGHT_SLOPE.value,
+                    Flags.LIGHT_RADIUS.value,
                     0,
-                    Flags.Light_Slope.value,
-                    Flags.Light_Pivot.value,
-                    Flags.Light_Stride.value,
+                    Flags.LIGHT_SLOPE.value,
+                    Flags.LIGHT_PIVOT.value,
+                    Flags.LIGHT_STRIDE.value,
                 ],
             ], dtype=np.uint8)
             init_state_hex_str = State().from_matrix(matrix=init_state).to_hex()
@@ -518,12 +489,12 @@ if getenv('DEBUGMODE') == DebugModes.Innovation.value:
             print(self.handler.state)
             for (horizon, axis), rules in self.handler.all_possible_rules():
                 flag = self.handler.matrix[7 - horizon][axis]
-                print(horizon, axis, Flag2Unicode.get(flag), flag, rules)
+                print(horizon, axis, FLAG2UNICODE.get(flag), flag, rules)
 
             self.handler.dark_mode = True
             for (horizon, axis), rules in self.handler.all_possible_rules():
                 flag = self.handler.matrix[7 - horizon][axis]
-                print(horizon, axis, Flag2Unicode.get(flag), flag, rules)
+                print(horizon, axis, FLAG2UNICODE.get(flag), flag, rules)
 
     if __name__ == '__main__':
         unittest.main()

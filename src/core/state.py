@@ -4,43 +4,33 @@ States and interface for encoding and decoding states.
 Classes
 -------
 - State: Represents the state of the system with methods to convert between different representations.
-
-State
------
-- Attributes
-    - state: The internal state represented as a numpy array.
-
-- Methods
-    - __init__: Initializes a new instance of State.
-    - to_matrix: Converts State into a 64-element uint8 matrix.
-    - from_matrix: Loads State from a 64-element uint8 matrix.
-    - to_hex: Converts the 32-byte State to a hex string representation of 64 hex characters.
-    - from_hex: Converts a 64-character hex string into a 32-byte State.
-    - to_str: Returns a string representation of the state.
-    - __str__: Returns a string representation of the state.
+    - Attributes:
+        - state: The internal state represented as a numpy array.
+    - Methods:
+        - __init__: Initializes a new instance of State.
+        - to_matrix: Converts State into a 64-element uint8 matrix.
+        - from_matrix: Loads State from a 64-element uint8 matrix.
+        - to_hex: Converts the 32-byte State to a hex string representation of 64 hex characters.
+        - from_hex: Converts a 64-character hex string into a 32-byte State.
+        - to_str: Returns a string representation of the state.
+        - __str__: Returns a string representation of the state.
 
 Testing and QA
 ==============
 Classes
 -------
 - TestState: Unit tests for the State class.
-
-TestState
----------
-- Methods
-    - setUp: Sets up the test case environment.
-    - test_to_matrix: Tests the to_matrix method.
-    - test_from_matrix: Tests the from_matrix method.
-    - test_to_hex: Tests the to_hex method.
-    - test_from_hex: Tests the from_hex method.
-    - test_to_str: Tests the to_str method.
+    - Methods:
+        - setUp: Sets up the test case environment.
+        - test_to_matrix: Tests the to_matrix method.
+        - test_from_matrix: Tests the from_matrix method.
+        - test_to_hex: Tests the to_hex method.
+        - test_from_hex: Tests the from_hex method.
+        - test_to_str: Tests the to_str method.
 """
 from os import getenv
 import numpy as np
-if __package__ is None or __package__ == '':
-    from constants import Flag2Unicode, Unicodes, DebugModes
-else:
-    from .constants import Flag2Unicode, Unicodes, DebugModes
+from .constants import FLAG2UNICODE, Unicodes, DebugModes
 
 class State:
     """
@@ -130,7 +120,7 @@ class State:
         state_str = ''
         for row in matrix:
             for cell in row:
-                symbol = Flag2Unicode.get(cell, Unicodes.Invalid_Unicode.value)
+                symbol = FLAG2UNICODE.get(cell, Unicodes.INVALID_UNICODE.value)
                 state_str += symbol
             state_str += '\n'
         return state_str
@@ -146,9 +136,8 @@ class State:
         """
         return self.to_str()
 
-if getenv('DEBUGMODE') == DebugModes.Innovation.value:
+if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
     import unittest
-    from constants import TestConstants
 
     class TestState(unittest.TestCase):
         """

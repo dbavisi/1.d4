@@ -1,8 +1,8 @@
-name: Run Python Script Every 48 Minutes
+name: Run Python Script Every 2 Hours
 
 on:
   schedule:
-    - cron: "*/48 * * * *" # Every 48 minutes
+    - cron: "0 */2 * * *" # Every 2 hours
   workflow_dispatch: # Allow manual triggering as well
 
 permissions:
