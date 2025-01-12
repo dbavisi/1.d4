@@ -15,12 +15,13 @@ Functions
 - check_and_create_path: Checks and creates the specified path if it does not exist.
 - buglog: Synchronous and multi-threaded debug logger method.
 """
+import sys
 from queue import Queue
 from os import path, makedirs, getenv
-from logging import Formatter, FileHandler, StreamHandler, getLogger, DEBUG
-from logging.handlers import QueueHandler, QueueListener
+from logging import Formatter, StreamHandler, getLogger, DEBUG
+from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from datetime import datetime
-from .constants import DebugModes
+from .constants import DebugModes, MAX_LOG_SIZE
 
 class DirectoryTrie:
     """
@@ -84,13 +85,13 @@ def check_and_create_path(path_to_check: str, is_file: bool = False, create_dir:
 log_queue = Queue()
 logform = '%(asctime)s %(filename)s:%(lineno)d %(message)s'
 
-if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
-    handler = StreamHandler()
+if getenv('DEBUGMODE') != DebugModes.INNOVATION.value:
+    handler = StreamHandler(sys.stdout)
 else:
     timestamp = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
     bugfile = path.join('.buglog', f'buglog_{timestamp}.log')
     check_and_create_path('.buglog')
-    handler = FileHandler(bugfile)
+    handler = RotatingFileHandler(bugfile, maxBytes=MAX_LOG_SIZE, backupCount=10)
 
 handler.setFormatter(Formatter(logform))
 queue_handler = QueueHandler(log_queue)
