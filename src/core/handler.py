@@ -40,6 +40,7 @@ from os import getenv
 import numpy as np
 from .constants import ModeCheck, Flags, DebugModes
 from .state import State
+from .utils import buglog
 
 def inbounds(value: int) -> bool:
     """
@@ -407,6 +408,10 @@ class Handler:
                 if anchor_coord:
                     break
 
+            if anchor_coord is None:
+                buglog(f"Missing Anchor @{self.state.to_hex()}")
+                return []
+
             self.alternate_handler = Handler(not self.dark_mode, hex_str=self.state.to_hex(), unsafe_anchor=True)
             self.alternate_rules = self.alternate_handler.all_possible_rules()
 
@@ -486,15 +491,15 @@ if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
             """
             Tests the Handler class.
             """
-            print(self.handler.state)
+            buglog(str(self.handler.state))
             for (horizon, axis), rules in self.handler.all_possible_rules():
                 flag = self.handler.matrix[7 - horizon][axis]
-                print(horizon, axis, FLAG2UNICODE.get(flag), flag, rules)
+                buglog(f"{horizon} {axis} {FLAG2UNICODE.get(flag)} {flag} {rules}")
 
             self.handler.dark_mode = True
             for (horizon, axis), rules in self.handler.all_possible_rules():
                 flag = self.handler.matrix[7 - horizon][axis]
-                print(horizon, axis, FLAG2UNICODE.get(flag), flag, rules)
+                buglog(f"{horizon} {axis} {FLAG2UNICODE.get(flag)} {flag} {rules}")
 
     if __name__ == '__main__':
         unittest.main()

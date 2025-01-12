@@ -61,6 +61,7 @@ Constants
 - QUEUE_DIR: Directory where the queue files are saved.
 - FILE_EXTENSION: File extension for the stored files.
 - MAX_QUEUE_SIZE: Maximum size of the queue in bytes.
+- MAX_LOG_SIZE: Maximum size of the log file in bytes.
 
 Testing and QA
 ==============
@@ -167,6 +168,8 @@ FILE_EXTENSION: str = '.raw'
 MAX_PROCESS_QUEUE: int = 8192
 MAX_QUEUE_SIZE: int = MAX_PROCESS_QUEUE * 32
 
+MAX_LOG_SIZE: int = 10 * 1024 * 1024  # 10 MB
+
 if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
     import unittest
 
@@ -255,6 +258,7 @@ if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
             self.assertEqual(QUEUE_DIR, '.queue')
             self.assertEqual(FILE_EXTENSION, '.raw')
             self.assertEqual(MAX_QUEUE_SIZE, 1024 * 1024)
+            self.assertEqual(MAX_LOG_SIZE, 10 * 1024 * 1024)
 
     if __name__ == '__main__':
         unittest.main()
