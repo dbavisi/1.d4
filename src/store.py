@@ -230,8 +230,8 @@ def partitioned_filename(parent_dir: str, hex_str: str) -> str:
     str
         The partitioned filename.
     """
-    step = 16
-    parts = [hex_str[i:i + step] for i in range(0, len(hex_str) - step, step)]
+    step = 8
+    parts = [hex_str[i:i + step] for i in range(0, len(hex_str) - 2 * step, step)]
     return path.join(parent_dir, *parts, hex_str + FILE_EXTENSION)
 
 def pack(handler: Handler, qc: QueueController = None) -> None:
