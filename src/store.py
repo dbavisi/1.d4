@@ -234,7 +234,7 @@ def partitioned_filename(parent_dir: str, hex_str: str) -> str:
     parts = [hex_str[i:i + step] for i in range(0, len(hex_str) - 2 * step, step)]
     return path.join(parent_dir, *parts, hex_str + FILE_EXTENSION)
 
-def pack(handler: Handler, qc: QueueController = None) -> None:
+def pack(handler: Handler, qc: QueueController = None) -> bool:
     """
     Packs the handler's state and possible rules into files.
 
@@ -244,6 +244,11 @@ def pack(handler: Handler, qc: QueueController = None) -> None:
         The handler object.
     qc : QueueController, optional
         The queue controller, by default None.
+
+    Returns
+    -------
+    bool
+        True if the entry was processed, False otherwise.
     """
     mode_dir = path.join(STORE_DIR, Modes.DARK.value if handler.dark_mode else Modes.LIGHT.value, HANDLER_DIR)
     alt_mode_dir = path.join(STORE_DIR, Modes.LIGHT.value if handler.dark_mode else Modes.DARK.value, HANDLER_DIR)
@@ -254,7 +259,7 @@ def pack(handler: Handler, qc: QueueController = None) -> None:
 
     if check_and_create_path(file_name, is_file=True, create_dir=True):
         print(f"Found pack: {file_name}")
-        return
+        return False
 
     if qc is None:
         alt_queue_dir = QueueController.generate_queue_dir(not handler.dark_mode)
@@ -283,9 +288,10 @@ def pack(handler: Handler, qc: QueueController = None) -> None:
 
                 if not check_and_create_path(new_state_file_name, is_file=True):
                     qc.write(new_state_bytes)
-                    print(f"Enqueued: {new_state_file_name}")
+                    # print(f"Enqueued: {new_state_file_name}")
                 else:
-                    print(f"Skippend re-pack: {new_state_file_name}")
+                    print(f"Skipped re-pack: {new_state_file_name}")
+    return True
 
 def process_queue(dark_mode: bool, batch_size: int = MAX_PROCESS_QUEUE) -> None:
     """
@@ -310,8 +316,8 @@ def process_queue(dark_mode: bool, batch_size: int = MAX_PROCESS_QUEUE) -> None:
             if count >= batch_size:
                 break
             handler = Handler(dark_mode, from_bytes=state)
-            pack(handler, alt_qc)
-            count += 1
+            if pack(handler, alt_qc):
+                count += 1
 
 if getenv('DEBUGMODE') == DebugModes.INNOVATION.value:
     if __name__ == '__main__':
