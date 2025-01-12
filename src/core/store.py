@@ -209,8 +209,9 @@ def pack(handler: Handler, qc: QueueController = None) -> bool:
         check_and_create_path(alt_queue_dir, create_dir=True)
         qc = QueueController(alt_queue_dir)
 
-    buglog(f"Packing handler state: {handler.state.to_hex()}")
+    buglog(f"Packing handler state: {file_name}")
     count_enqueued = 0
+    count_found = 0
     with qc, open(file_name, 'wb') as store:
         for (horizon, axis), possible_rules in handler.all_possible_rules():
             source = (horizon << 4) | axis
@@ -234,10 +235,9 @@ def pack(handler: Handler, qc: QueueController = None) -> bool:
                 if not check_and_create_path(new_state_file_name, is_file=True):
                     qc.write(new_state_bytes)
                     count_enqueued += 1
-                    # buglog(f"Enqueued: {new_state_file_name}")
                 else:
-                    buglog(f"Found: {new_state_file_name}")
-    buglog(f"Enqueued: {count_enqueued} states")
+                    count_found += 1
+    buglog(f"Enqueued: {count_enqueued} states, Found: {count_found} states")
     return True
 
 def process_queue(dark_mode: bool, batch_size: int = MAX_PROCESS_QUEUE) -> None:
